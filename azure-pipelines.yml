@@ -17,5 +17,4 @@ steps:
     scriptType: bash
     scriptLocation: inlineScript
     inlineScript: |
-      az --version
-      # az container create -g $(ResourceGroup) --file $(YAMLName)
+      az container create -g $(ResourceGroup) --file $(YAMLName)
