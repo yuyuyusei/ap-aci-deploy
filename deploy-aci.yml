@@ -1,0 +1,70 @@
+name: MyWordpress
+apiVersion: '2021-10-01'
+location: japanwest
+properties:
+  containers:
+  # DBコンテナ
+  - name: wordpressdb
+    properties:
+      image: mysql:5.7
+      resources:
+        requests:
+          cpu: 1
+          memoryInGB: 1.5
+      ports:
+      - port: 3306
+      environmentVariables:
+      - name: MYSQL_ROOT_PASSWORD
+        value: somewordpress 
+      - name: MYSQL_DATABASE
+        value: wordpress
+      - name: MYSQL_USER
+        value: wordpress
+      - name: MYSQL_PASSWORD
+        value: wordpress
+      volumeMounts:
+      - mountPath: /var/lib/mysql
+        name: db-data
+
+  # Appコンテナ
+  - name: wordpressapp
+    properties:
+      image: wordpress:latest
+      resources:
+        requests:
+          cpu: 1
+          memoryInGB: 1.5
+      ports:
+      - port: 80
+      environmentVariables:
+      - name: WORDPRESS_DB_HOST
+        value: 127.0.0.1:3306
+      - name: WORDPRESS_DB_USER
+        value: wordpress
+      - name: WORDPRESS_DB_PASSWORD
+        value: wordpress
+      volumeMounts:
+      - mountPath: /var/www/html
+        name: app-data
+  osType: Linux
+
+  ipAddress:
+    type: Public
+    ports:
+    - protocol: tcp
+      port: 80
+    dnsNameLabel: yuyuyuwordpress
+  
+  volumes:
+  - name: db-data
+    azureFile:
+      sharename: db-fileshare
+      storageAccountName: odacontainerstorage
+      storageAccountKey: ubDDBVOwpIBn/yE3yu63emdRNltvfGwQCPhwoOf3Gwbug8/mwY7HKr6jPdJhUNZbwsRJiETOiQAD+AStWdHsfQ==
+  - name: app-data
+    azureFile:
+      sharename: app-fileshare
+      storageAccountName: odacontainerstorage
+      storageAccountKey: ubDDBVOwpIBn/yE3yu63emdRNltvfGwQCPhwoOf3Gwbug8/mwY7HKr6jPdJhUNZbwsRJiETOiQAD+AStWdHsfQ==
+type: Microsoft.ContainerInstance/containerGroups
+
