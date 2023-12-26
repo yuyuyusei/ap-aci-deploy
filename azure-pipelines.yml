@@ -4,13 +4,18 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
+variables:
+  armServiceConnection: 'AzurePipelines_SP'
+  ResourceGroup: 'oda_sandbox'
+  YAMLName: 'deploy-aci.yml'
+
 steps:
 - task: AzureCLI@2
-  displayName: Azure CLI test
+  displayName: ACI Deploy
   inputs:
-    azureSubscription: AzurePipelines_SP
+    azureSubscription: $(armServiceConnection)
     scriptType: bash
     scriptLocation: inlineScript
     inlineScript: |
       az --version
-      az account show
+      # az container create -g $(ResourceGroup) --file $(YAMLName)
